@@ -22,7 +22,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Install PyTorch Nightly
-RUN pip3 install --no-cache-dir --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+# RUN pip3 install --no-cache-dir --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+RUN pip3 install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 
 # 3. Clone ComfyUI
 WORKDIR /
@@ -38,7 +39,10 @@ RUN pip3 install --no-cache-dir \
     einops \
     loguru \
     omegaconf \
-    pandas
+    pandas \
+    protobuf \
+    gguf-node
+
 
 # 6. Install Custom Nodes
 WORKDIR /ComfyUI/custom_nodes
@@ -48,19 +52,19 @@ WORKDIR /ComfyUI/custom_nodes
 
 # ComfyUI Manager
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git && \
-    pip install --no-cache-dir -r ComfyUI-Manager/requirements.txt
+    pip3 install --no-cache-dir -r ComfyUI-Manager/requirements.txt
 
 # Video Helper Suite
 RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git && \
-    pip install --no-cache-dir -r ComfyUI-VideoHelperSuite/requirements.txt
+    pip3 install --no-cache-dir -r ComfyUI-VideoHelperSuite/requirements.txt
 
 # Impact Pack
 RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack comfyui-impact-pack && \
-    pip install --no-cache-dir -r comfyui-impact-pack/requirements.txt
+    pip3 install --no-cache-dir -r comfyui-impact-pack/requirements.txt
 
 # KJNodes
 RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git && \
-    pip install --no-cache-dir -r ComfyUI-KJNodes/requirements.txt
+    pip3 install --no-cache-dir -r ComfyUI-KJNodes/requirements.txt
 
 # LongLook
 RUN git clone https://github.com/onerok/comfyUI-LongLook.git
@@ -68,13 +72,19 @@ RUN git clone https://github.com/onerok/comfyUI-LongLook.git
 # Rgthree
 RUN git clone https://github.com/rgthree/rgthree-comfy.git
 
+RUN git clone https://github.com/ClownsharkBatwing/RES4LYF.git && \
+    pip3 install --no-cache-dir -r RES4LYF/requirements.txt
+
 # Video Utils
 RUN git clone https://github.com/saltchicken/ComfyUI-Video-Utils.git
+
+RUN git clone https://github.com/saltchicken/ComfyUI-Local-Loader.git
+
 
 # ComfyScript
 RUN git clone https://github.com/Chaoses-Ib/ComfyScript.git && \
     cd ComfyScript && \
-    pip install --no-cache-dir -e ".[default]"
+    pip3 install --no-cache-dir -e ".[default]"
 
 # 7. Install Your Custom Project
 # WORKDIR /opt/custom_runner

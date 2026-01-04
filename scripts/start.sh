@@ -3,13 +3,11 @@
 # Define paths
 COMFY_BASE="/ComfyUI"
 MODELS_BASE="$COMFY_BASE/models"
-# ‼️ Made the persistence path configurable. Defaults to /workspace, but you can set STORAGE_ROOT env var.
 STORAGE_ROOT="${STORAGE_ROOT:-/workspace}"
 
 echo "--- Starting Persistence Manager ---"
 echo "Storage Root: $STORAGE_ROOT"
 
-# ‼️ added a check to warn you if you forgot to mount a volume
 if [ ! -d "$STORAGE_ROOT" ]; then
   echo "⚠️  WARNING: $STORAGE_ROOT does not exist inside the container!"
   echo "   Your files (outputs, downloaded models) will NOT be saved."
@@ -25,7 +23,6 @@ link_model_folder() {
   # Path inside the ephemeral container (e.g., /ComfyUI/models/loras)
   CONTAINER_PATH="$MODELS_BASE/$FOLDER_NAME"
 
-  # ‼️ Updated to look inside the 'models' subdirectory of your storage root
   # This matches standard ComfyUI installation structure
   PERSISTENT_PATH="$STORAGE_ROOT/models/$FOLDER_NAME"
 
@@ -58,7 +55,6 @@ link_model_folder() {
 }
 
 # Link the standard model folders
-# ‼️ Added "checkpoints" as that is the standard main model folder in existing installs
 link_model_folder "checkpoints"
 link_model_folder "diffusion_models" # For UNETs (Flux/SD3)
 link_model_folder "loras"
@@ -72,7 +68,6 @@ link_model_folder "embeddings"
 echo "Processing input/output..."
 
 # Output
-# ‼️ Keeps input/output at the ROOT of storage (as requested)
 if [ -d "$STORAGE_ROOT/output" ]; then
   rm -rf /ComfyUI/output && ln -sfn "$STORAGE_ROOT/output" /ComfyUI/output
 else
@@ -90,7 +85,6 @@ echo "Processing workflows..."
 
 # Define exact paths
 WORKFLOW_CONTAINER="/ComfyUI/user/default/workflows"
-# ‼️ Updated to match standard ComfyUI folder structure for persistence
 WORKFLOW_PERSIST="$STORAGE_ROOT/user/default/workflows"
 
 # Ensure the parent directory exists in the container
@@ -116,5 +110,4 @@ fi
 
 echo "--- Launching ComfyUI ---"
 cd /ComfyUI
-# ‼️ Standard launch. Since you are local, you might want --preview-method auto
-python main.py --listen 0.0.0.0 --port 8188
+python main.py --listen 0.0.0.0 --port 8188 ${CLI_ARGS}
