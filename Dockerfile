@@ -70,6 +70,9 @@ RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack comfyui-impact-pac
 RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git && \
     pip3 install --no-cache-dir -r ComfyUI-KJNodes/requirements.txt
 
+RUN git clone git clone https://github.com/yolain/ComfyUI-Easy-User.git && \
+    pip3 install --no-cache-dir -r ComfyUI-Easy-User/requirements.txt
+
 # LongLook
 RUN git clone https://github.com/onerok/comfyUI-LongLook.git
 
