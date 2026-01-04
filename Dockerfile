@@ -54,7 +54,7 @@ WORKDIR /ComfyUI/custom_nodes
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git && \
     pip3 install --no-cache-dir -r ComfyUI-Manager/requirements.txt
 
-RUN git clone https://github.com/calcuis/gguf
+RUN git clone https://github.com/calcuis/gguf.git
 
 # Video Helper Suite
 RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git && \
@@ -82,6 +82,9 @@ RUN git clone https://github.com/saltchicken/ComfyUI-Video-Utils.git
 
 RUN git clone https://github.com/saltchicken/ComfyUI-Local-Loader.git
 
+RUN git clone https://github.com/saltchicken/ComfyUI-Identity-Mixer.git
+
+RUN git clone https://github.com/saltchicken/ComfyUI-Output-Plucker.git
 
 # ComfyScript
 RUN git clone https://github.com/Chaoses-Ib/ComfyScript.git && \
