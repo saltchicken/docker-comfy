@@ -79,6 +79,9 @@ RUN git clone https://github.com/rgthree/rgthree-comfy.git
 RUN git clone https://github.com/ClownsharkBatwing/RES4LYF.git && \
     pip3 install --no-cache-dir -r RES4LYF/requirements.txt
 
+RUN git clone https://github.com/adieyal/comfyui-dynamicprompts.git && \
+    pip3 install --no-cache-dir -r comfyui-dynamicprompts/requirements.txt
+
 # Video Utils
 RUN git clone https://github.com/saltchicken/ComfyUI-Video-Utils.git
 
