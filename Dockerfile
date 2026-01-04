@@ -54,6 +54,8 @@ WORKDIR /ComfyUI/custom_nodes
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git && \
     pip3 install --no-cache-dir -r ComfyUI-Manager/requirements.txt
 
+RUN git clone https://github.com/calcuis/gguf
+
 # Video Helper Suite
 RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git && \
     pip3 install --no-cache-dir -r ComfyUI-VideoHelperSuite/requirements.txt
