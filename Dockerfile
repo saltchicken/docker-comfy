@@ -77,10 +77,10 @@ RUN git clone https://github.com/Chaoses-Ib/ComfyScript.git && \
     pip install --no-cache-dir -e ".[default]"
 
 # 7. Install Your Custom Project
-WORKDIR /opt/custom_runner
-COPY pyproject.toml .
-COPY src ./src
-RUN pip3 install --no-cache-dir .
+# WORKDIR /opt/custom_runner
+# COPY pyproject.toml .
+# COPY src ./src
+# RUN pip3 install --no-cache-dir .
 
 # 8. Setup Workspace & Start Script
 WORKDIR /

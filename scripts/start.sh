@@ -25,8 +25,9 @@ link_model_folder() {
   # Path inside the ephemeral container (e.g., /ComfyUI/models/loras)
   CONTAINER_PATH="$MODELS_BASE/$FOLDER_NAME"
 
-  # Path on your persistent disk (e.g., /workspace/loras)
-  PERSISTENT_PATH="$STORAGE_ROOT/$FOLDER_NAME"
+  # ‼️ Updated to look inside the 'models' subdirectory of your storage root
+  # This matches standard ComfyUI installation structure
+  PERSISTENT_PATH="$STORAGE_ROOT/models/$FOLDER_NAME"
 
   echo "Processing $FOLDER_NAME..."
 
@@ -37,7 +38,7 @@ link_model_folder() {
 
   # 2. Check if the user already has this folder in storage
   if [ -d "$PERSISTENT_PATH" ]; then
-    echo "  Found existing $FOLDER_NAME in storage. Linking..."
+    echo "  Found existing $FOLDER_NAME in storage/models. Linking..."
     # ‼️ Safety: Only delete the container path if it's NOT a symlink already
     if [ ! -L "$CONTAINER_PATH" ]; then
       rm -rf "$CONTAINER_PATH"
@@ -46,7 +47,10 @@ link_model_folder() {
 
   # 3. If not in storage, move the container's default folder there to seed it
   else
-    echo "  No $FOLDER_NAME in storage. Creating it..."
+    echo "  No $FOLDER_NAME in storage/models. Creating it..."
+    # Ensure parent models directory exists in storage
+    mkdir -p "$STORAGE_ROOT/models"
+
     # ‼️ Move files to storage so they persist, then link back
     mv "$CONTAINER_PATH" "$PERSISTENT_PATH"
     ln -sfn "$PERSISTENT_PATH" "$CONTAINER_PATH"
@@ -54,17 +58,21 @@ link_model_folder() {
 }
 
 # Link the standard model folders
-link_model_folder "diffusion_models"
+# ‼️ Added "checkpoints" as that is the standard main model folder in existing installs
+link_model_folder "checkpoints"
+link_model_folder "diffusion_models" # For UNETs (Flux/SD3)
 link_model_folder "loras"
 link_model_folder "vae"
 link_model_folder "text_encoders"
-# ‼️ Added controlnet as it's commonly used locally
 link_model_folder "controlnet"
+link_model_folder "upscale_models"
+link_model_folder "clip"
+link_model_folder "embeddings"
 
 echo "Processing input/output..."
 
 # Output
-# ‼️ Updated to use STORAGE_ROOT
+# ‼️ Keeps input/output at the ROOT of storage (as requested)
 if [ -d "$STORAGE_ROOT/output" ]; then
   rm -rf /ComfyUI/output && ln -sfn "$STORAGE_ROOT/output" /ComfyUI/output
 else
@@ -82,7 +90,8 @@ echo "Processing workflows..."
 
 # Define exact paths
 WORKFLOW_CONTAINER="/ComfyUI/user/default/workflows"
-WORKFLOW_PERSIST="$STORAGE_ROOT/workflows"
+# ‼️ Updated to match standard ComfyUI folder structure for persistence
+WORKFLOW_PERSIST="$STORAGE_ROOT/user/default/workflows"
 
 # Ensure the parent directory exists in the container
 mkdir -p "/ComfyUI/user/default"
@@ -94,6 +103,9 @@ if [ -d "$WORKFLOW_PERSIST" ]; then
   ln -sfn "$WORKFLOW_PERSIST" "$WORKFLOW_CONTAINER"
 else
   echo "  No workflows in storage. Setup new persistence..."
+  # Ensure the directory structure exists in storage before moving/linking
+  mkdir -p "$(dirname "$WORKFLOW_PERSIST")"
+
   if [ -d "$WORKFLOW_CONTAINER" ]; then
     mv "$WORKFLOW_CONTAINER" "$WORKFLOW_PERSIST"
   else

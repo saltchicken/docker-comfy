@@ -1,0 +1,24 @@
+services:
+  comfyui:
+    build: .
+    container_name: comfyui-local
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    
+    ports:
+      - "8188:8188"
+    
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CLI_ARGS=--preview-method auto
+      # Matches the default in start.sh
+      - STORAGE_ROOT=/workspace 
+
+    volumes:
+      - /home/saltchicken/.local/share/ComfyUI:/workspace
